@@ -1,0 +1,16 @@
+name: test
+
+on:
+  - pull_request
+
+jobs:
+  npm-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm i -d
+      - run: npm run test
