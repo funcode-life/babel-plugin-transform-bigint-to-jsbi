@@ -78,67 +78,70 @@ module.exports = function (babel) {
       ));
       setBigIntSymbol(path)
     },
-    CallExpression(path) {
-      if (isBigIntNode(path.node, path.scope)) {
-        const { type, object, property, name } = path.node.callee
+    CallExpression: {
+      exit(path) {
+        if (isBigIntNode(path.node, path.scope)) {
+          const { type, object, property, name } = path.node.callee
 
-        // 静态方法调用
-        if (type === 'MemberExpression') {
-          const callee_name = object.name
-          const callee_property = property.name
-          if (callee_name === 'BigInt') {
+          // 静态方法调用
+          if (type === 'MemberExpression') {
+            const callee_name = object.name
+            const callee_property = property.name
+            if (callee_name === 'BigInt') {
+              path.replaceWith(types.callExpression(
+                types.memberExpression(
+                  types.identifier(JSBI),
+                  types.identifier(callee_property)
+                ),
+                path.node.arguments
+              ));
+            }
+          }
+
+          // 调用BigInt构造函数
+          else if (type === 'Identifier' && name === 'BigInt') {
             path.replaceWith(types.callExpression(
               types.memberExpression(
                 types.identifier(JSBI),
-                types.identifier(callee_property)
+                types.identifier('BigInt')
               ),
               path.node.arguments
             ));
           }
+          // 保存标识符
+          setBigIntSymbol(path)
         }
-
-        // 调用BigInt构造函数
-        else if (type === 'Identifier' && name === 'BigInt') {
+      }
+    },
+    BinaryExpression: {
+      exit(path) {
+        if (isBigIntNode(path.node, path.scope)) {
           path.replaceWith(types.callExpression(
             types.memberExpression(
               types.identifier(JSBI),
-              types.identifier('BigInt')
+              types.identifier(BINARY_FUNC_REPLACE[path.node.operator])
             ),
-            path.node.arguments
+            [path.node.left, path.node.right]
           ));
+          setBigIntSymbol(path)
         }
-        // 保存标识符
-        setBigIntSymbol(path)
       }
     },
-    BinaryExpression(path) {
-      if (isBigIntNode(path.node, path.scope)) {
-        path.replaceWith(types.callExpression(
-          types.memberExpression(
-            types.identifier(JSBI),
-            types.identifier(BINARY_FUNC_REPLACE[path.node.operator])
-          ),
-          [path.node.left, path.node.right]
-        ));
-        setBigIntSymbol(path)
-      }
-    },
-    AssignmentExpression(path) {
-      if (isBigIntNode(path.node, path.scope)) {
-        // traverse children
-        path.traverse(visitor)
+    AssignmentExpression: {
+      exit(path) {
+        if (isBigIntNode(path.node, path.scope)) {
+          const operator = path.node.operator.replace('=', '')
+          const right = types.callExpression(
+            types.memberExpression(
+              types.identifier(JSBI),
+              types.identifier(BINARY_FUNC_REPLACE[operator])
+            ),
+            [path.node.left, path.node.right]
+          )
+          path.replaceWith(types.AssignmentExpression('=', path.node.left, right))
 
-        const operator = path.node.operator.replace('=', '')
-        const right = types.callExpression(
-          types.memberExpression(
-            types.identifier(JSBI),
-            types.identifier(BINARY_FUNC_REPLACE[operator])
-          ),
-          [path.node.left, path.node.right]
-        )
-        path.replaceWith(types.AssignmentExpression('=', path.node.left, right))
-
-        setBigIntSymbol(path)
+          setBigIntSymbol(path)
+        }
       }
     },
   }
