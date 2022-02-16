@@ -1,7 +1,16 @@
 {
   "name": "babel-plugin-transform-bigint-to-jsbi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Babel plugin to transform BigInt to JSBI",
+  "repository": {
+    "url": "https://github.com/DYSDF/babel-plugin-transform-bigint-to-jsbi"
+  },
+  "keywords": [
+    "babel",
+    "bigint",
+    "polyfill",
+    "jsbi"
+  ],
   "main": "./dist/index.js",
   "files": [
     "dist"
