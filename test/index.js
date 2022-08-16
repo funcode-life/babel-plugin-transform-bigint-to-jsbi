@@ -7,13 +7,14 @@ const random = () => BigInt(Math.ceil(Math.random() * 1000)) + BigInt('10086')
 
 console.log(n_b ** n_c)
 console.log(n_b + n_c)
+console.log(2n - 1n)
+console.log(3n * n_b)
 console.log(n_b / 3n)
 console.log(n_b % 3n)
-console.log(2n - 1n)
 console.log(n_b -= 1n)
 console.log(BigInt.asIntN(64, n_b))
 
-if (random() < 10586n) {
+if (random() < 50586n) {
   const parts = ["ff", "0", "0", "0", "0", "0", "0", "2"]
   console.log(parts.reduce((acc, p) => acc * 2n ** 16n + BigInt(parseInt(p, 16)), 0n))
 }

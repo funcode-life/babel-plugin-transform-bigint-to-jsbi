@@ -1,5 +1,16 @@
 {
+  "presets": [
+    ["@babel/preset-env", {
+      "modules": false,
+      "targets": {
+        "chrome": 40,
+        "edge": 14,
+        "firefox": 40,
+        "safari": 9
+      }
+    }]
+  ],
   "plugins": [
-    "../dist/index.js"
+    "../src/index.js"
   ]
 }

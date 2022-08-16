@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-bigint-to-jsbi",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A Babel plugin to transform BigInt to JSBI",
   "repository": {
     "url": "https://github.com/DYSDF/babel-plugin-transform-bigint-to-jsbi"
@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build": "babel src/index.js -o dist/index.js",
-    "test": "npm run build && babel --config-file ./test/.babelrc ./test/index.js | node -r esm",
+    "test": "babel --config-file ./test/.babelrc ./test/index.js | node -r esm",
     "prepublishOnly": "npm run build"
   },
   "author": "admin@duan-ya.com",
