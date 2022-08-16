@@ -49,7 +49,7 @@ module.exports = function (babel) {
       const { type, object, name } = node.callee
 
       // 静态方法调用
-      if (type === 'MemberExpression') return object.name === 'BigInt'
+      if (type === 'MemberExpression') return object.name === 'BigInt' || object.name === 'JSBI'
 
       // 调用BigInt构造函数
       if (type === 'Identifier' && name === 'BigInt') return true
